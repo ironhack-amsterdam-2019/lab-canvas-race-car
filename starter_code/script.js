@@ -11,10 +11,10 @@ window.onload = function () {
 
 class Game {
   constructor() {
-    this.speed = 12;
+    this.speed = 8;
     this.canvas = document.querySelector("#game-board canvas");
     this.startGame();
-    this.tickId = setInterval(this.tick.bind(this), 50);
+    this.tickId = setInterval(this.tick.bind(this), 25);
     this.currentKey = undefined;
   }
 
@@ -47,9 +47,11 @@ class Game {
     ctx.fillRect(this.canvas.width * 0.1, 0, this.canvas.width * 0.8, this.canvas.height);
     ctx.fillStyle = "white";
     ctx.fillRect(this.canvas.width * 0.13, 0, this.canvas.width * 0.03, this.canvas.height);
-    ctx.fillRect(this.canvas.width * 0.87, 0, this.canvas.width * 0.03, this.canvas.height);
-    for (let i = 0; i < 10; i++) {
-      ctx.fillRect(this.canvas.width * 0.49, i * (this.canvas.height / 10) + (this.canvas.height / 40), this.canvas.width * 0.02, this.canvas.height / 20);
+    ctx.fillRect(this.canvas.width * 0.84, 0, this.canvas.width * 0.03, this.canvas.height);
+    // animation of lines
+    let pos = ((new Date()).getTime() % 500) / 500 - 0.5;
+    for (let i = 0; i < 11; i++) {
+      ctx.fillRect(this.canvas.width * 0.49, i * (this.canvas.height / 10) + (this.canvas.height / 10) * pos, this.canvas.width * 0.02, this.canvas.height / 20);
     }
   }
 
@@ -59,6 +61,7 @@ class Game {
   }
 
   tick() {
+    this.drawRoad();
     if (this.currentKey) {
       let oldPosition = {
         x: this.car.x,
@@ -69,11 +72,9 @@ class Game {
         // reset position
         this.car.x = oldPosition.x;
         this.car.y = oldPosition.y;
-      } else {
-        this.drawRoad();
-        this.drawCar();
       }
     }
+    this.drawCar();
   }
 
   keyDown(e) {
@@ -86,7 +87,7 @@ class Game {
     if (!e.key || (e.key !== "ArrowLeft" && e.key !== "ArrowRight")) return;
     e.preventDefault();
     // the if check here allows pressing a second key before releasing the old one
-    if(this.currentKey === e.key)this.currentKey = undefined;
+    if (this.currentKey === e.key) this.currentKey = undefined;
   }
 
   checkCollision() {
